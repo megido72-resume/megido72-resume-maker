@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta name="viewport" content="width=device-width">
+  <meta content="utf-8" http-equiv="encoding">
+
+  <title>メギド72履歴書メーカー</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script>
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap&text=%E3%83%A1%E3%82%AE%E3%83%89%E5%B1%A5%E6%AD%B4%E6%9B%B8"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap&text=%E4%BD%9C%E6%88%90%E6%97%A5%3A%2F0123456789"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <script src="./maker.js"></script>
+</head>
+
+<body>
+  <h1>メギド履歴書メーカー</h1>
+  <div>
+    使い方: 項目を埋めて一番下の「これで確定」を押して下さい。意見、要望、不具合報告は <a href='https://twitter.com/megido72_resume'>@megido72_resume</a>まで。<br>
+    注意: 現状iPhoneでTwitterからのリンクを通して開いた場合うまく画像をダウンロードできないみたいです。右上のコンパスみたいなアイコンでSafariに切り替えられるのでしばらくはそれを試して下さい。
+  </div>
+  <div class="container">
+    <div class="row">
+      <label>
+        <span>名前</span>
+        <input type="text" id="name">
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>メギド所持数</span>
+        <input type="number" id="howmany_megido">
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>メギド星6数</span>
+        <input type="number" id="howmany_sixstar">
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>プレイヤーレベル</span>
+        <input type="number" id="player_level">
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>課金スタイル</span>
+        <select id="money">
+          <option></option>
+          <option value="plankton">無課金</option>
+          <option value="dolphin">微課金</option>
+          <option value="whale">重課金</option>
+        </select>
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>プレイスタイル</span>
+        <select id="play_style">
+          <option></option>
+          <option>まったりプレイヤー</option>
+          <option>メギドを愛で隊</option>
+          <option>ストーリー考察マン</option>
+          <option>PvPガチ勢</option>
+          <option>メギドコンプ勢</option>
+          <option>大幻獣周回ガチ勢</option>
+          <option>オーブ収集家</option>
+          <option>霊宝収集家</option>
+          <option>推しで勝ちたい</option>
+          <option>お絵描き大好き勢</option>
+          <option>しがない創作家</option>
+          <option>普通のソロモン</option>
+          <option>プレイスタイル模索中</option>
+        </select>
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>メイン進行状況</span>
+        <select id="main_story">
+          <option></option>
+          <option>最新節まで攻略済み</option>
+          <option>９章攻略中</option>
+          <option>８章攻略中</option>
+          <option>７章攻略中</option>
+          <option>６章攻略中</option>
+          <option>５章攻略中</option>
+          <option>４章攻略中</option>
+          <option>３章攻略中</option>
+          <option>２章攻略中</option>
+          <option>１章攻略中</option>
+          <option>始めたばかり！</option>
+        </select>
+      </label>
+    </div>
+    <div class="row">
+      <label>
+        <span>好きな戦術</span>
+        <select id="favorite_tactics">
+          <option></option>
+          <option>何でも使う！オールマイティ</option>
+          <option>ラッシュで猛攻！速攻好き</option>
+          <option>しぶとく耐久！カウンター使い</option>
+          <option>一撃必殺！バースト使い</option>
+          <option>推しで戦う努力は欠かさない</option>
+          <option>強化モリモリ！パワーが正義</option>
+          <option>状態異常でコントロール！</option>
+          <option>回復しながらチャンスを狙う！</option>
+          <option>粛々と力を溜める！点穴使い</option>
+          <option>粉砕爽快！ハイドロボマー</option>
+          <option>音楽は全てを解決！協奏好き</option>
+          <option>音で全てを吹き飛ばす！暴奏使い</option>
+          <option>怒りでぶちのめす！バーサーカー</option>
+          <option>バレットアーツで蜂の巣に！</option>
+          <option>力を合わせてチェインで連鎖！</option>
+          <option>組み合わせの可能性は無限大！</option>
+          <option>ビリビリ溜めるエレキ使い！</option>
+          <option>魂を力に！ネクロ使い</option>
+          <option>行動させない！ブレイク好き</option>
+          <option>狂炎で敵を燃やし尽くす！</option>
+          <option>コツコツ強化で盤石に！オーラ好き</option>
+          <option>闘争本能！コロッセオで真剣勝負</option>
+          <option>あなたのハートに響け弾撃！重奏</option>
+          <option>溜めろ！解き放て！Fインパルス</option>
+          <option>実は玄人？配布縛り</option>
+        </select>
+      </label>
+    </div>
+    <div class="row" id="favorite_contents">
+      <label>好きなコンテンツ</label>
+      <div><label><input type="checkbox" id="contents_main"><span class="label-body">メインストーリー</span></label></div>
+      <div><label><input type="checkbox" id="contents_event"><span class="label-body">イベントストーリー</span></label></div>
+      <div><label><input type="checkbox" id="contents_pvp"><span class="label-body">コロシアム(PvP)</span></label></div>
+      <div><label><input type="checkbox" id="contents_daigen"><span class="label-body">大幻獣討伐</span></label></div>
+      <div><label><input type="checkbox" id="contents_gacha"><span class="label-body">ガチャ</span></label></div>
+      <div><label><input type="checkbox" id="contents_chara"><span class="label-body">キャラストーリー</span></label></div>
+      <div><label><input type="checkbox" id="contents_reiho"><span class="label-body">霊宝作り</span></label></div>
+      <div><label><input type="checkbox" id="contents_raid"><span class="label-body">共襲</span></label></div>
+    </div>
+    <div class="row">
+      <label>
+        <span>コメント</span>
+        <input type="text" id="comment">
+      </label>
+    </div>
+    <div class="row">
+      <label class="four columns">
+        <span>推しメギド</span>
+        <select id="recommend_megido">
+          <option></option>
+        </select>
+      </label>
+      <label class="four columns">
+        <span>画像選択</span>
+        <input type="file" id="megido_image" accept="image/*">
+      </label>
+      <label class="four columns">
+        <span>メギドラル文字</span>
+        <input type="checkbox" id="enable_megidoral" checked>
+        <input type="text" id="megidral">
+      </label>
+    </div>
+  </div>
+  <div id="canvas_container" style="position: relative; width: 100%;">
+    <canvas id="megido_back" width="549" height="606"
+      style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+    <canvas id="megido_front" width="549" height="606"
+      style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+    <canvas id="megido_overlay" width="549" height="606"
+      style="position: absolute; left: 0; top: 0; z-index: 2;"></canvas>
+  </div>
+  <div style="position: relative; margin-top: 616px; padding-bottom: 50px">
+    <button id="gen_image">これで確定</button>
+    <div id="image_result"></div>
+  </div>
+</body>
+</html>
