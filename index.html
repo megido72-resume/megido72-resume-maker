@@ -9,7 +9,6 @@
   <title>メギド72履歴書メーカー</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
   <script>
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
@@ -24,34 +23,36 @@
 </head>
 
 <body>
-  <h1>メギド履歴書メーカー</h1>
-  <div>
-    使い方: 項目を埋めて一番下の「これで確定」を押して下さい。意見、要望、不具合報告は <a href='https://twitter.com/megido72_resume'>@megido72_resume</a>まで。<br>
-    注意: 現状iPhoneでTwitterからのリンクを通して開いた場合うまく画像をダウンロードできないみたいです。右上のコンパスみたいなアイコンでSafariに切り替えられるのでしばらくはそれを試して下さい。
+  <div class="container">
+    <div class="row"><h1>メギド履歴書メーカー</h1></div>
+    <div class="row">
+      使い方: 項目を埋めて一番下の「これで確定」を押して下さい。意見、要望、不具合報告は <a href='https://twitter.com/megido72_resume'>@megido72_resume</a>まで。<br>
+    </div>
   </div>
+  <hr>
   <div class="container">
     <div class="row">
       <label>
         <span>名前</span>
-        <input type="text" id="name">
+        <input type="text" id="name" size="40">
       </label>
     </div>
     <div class="row">
       <label>
         <span>メギド所持数</span>
-        <input type="number" id="howmany_megido">
+        <input type="number" id="howmany_megido" min="0" max="9999">
       </label>
     </div>
     <div class="row">
       <label>
         <span>メギド星6数</span>
-        <input type="number" id="howmany_sixstar">
+        <input type="number" id="howmany_sixstar" min="0" max="9999">
       </label>
     </div>
     <div class="row">
       <label>
         <span>プレイヤーレベル</span>
-        <input type="number" id="player_level">
+        <input type="number" id="player_level" min="0" max="9999">
       </label>
     </div>
     <div class="row">
@@ -152,7 +153,7 @@
     <div class="row">
       <label>
         <span>コメント</span>
-        <input type="text" id="comment">
+        <input type="text" id="comment" size="40">
       </label>
     </div>
     <div class="row">
@@ -163,7 +164,7 @@
         </select>
       </label>
       <label class="four columns">
-        <span>画像選択</span>
+        <span>自前の画像を選択</span>
         <input type="file" id="megido_image" accept="image/*">
       </label>
       <label class="four columns">
@@ -181,8 +182,11 @@
     <canvas id="megido_overlay" width="549" height="606"
       style="position: absolute; left: 0; top: 0; z-index: 2;"></canvas>
   </div>
-  <div style="position: relative; margin-top: 616px; padding-bottom: 50px">
-    <button id="gen_image">これで確定</button>
+  <div style="text-align: center; position: relative; margin-top: 616px; padding-bottom: 72px">
+    <div><button id="gen_image">これで確定</button></div>
+
+    <div style="display: none;" id="gen_image_description">この下に表示される画像を長押しもしくは右クリックして保存して、
+    必要ならば「<span style="user-select: all;">#メギド72 #メギド履歴書 #メギドクラスタと繋がりたい</span>」とかつけてツイートして下さい。</div>
     <div id="image_result"></div>
   </div>
 </body>

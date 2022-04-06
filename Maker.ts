@@ -17,10 +17,11 @@ enum DrawTarget {
 
 function drawText(txt: string, x: number, y: number, w: number, h: number, target = DrawTarget.HiddenFront) {
   drawTextSync(txt, x, y, w, h, target);
-  // wait for 1 seconds to load font, and write again. what a dirty hack!!
+  const waittime = target == DrawTarget.RevealedFront ? 1000 : 2000;
+  // wait for 1 or 2 seconds to load font, and write again. what a dirty hack!!
   setTimeout(() => {
     drawTextSync(txt, x, y, w, h, target);
-  }, 1000);
+  }, waittime);
 }
 
 function drawTextSync(txt: string, x: number, y: number, w: number, h: number, target: DrawTarget) {
@@ -313,17 +314,22 @@ document.addEventListener("DOMContentLoaded", () => {
         dx,
         dy,
       );
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL();
-      link.download = "megido-resume.png";
-      link.innerText =
-        "このリンクから画像をダウンロードして「#メギド履歴書」「#メギドクラスタと繋がりたい」とかつけてツイートして下さい";
-      link.classList.add("download_link");
-      const el_result = document.getElementById("image_result")!;
-      document.querySelectorAll(".download_link").forEach((el) => {
-        el.parentNode!.removeChild(el);
+      document.querySelector<HTMLElement>("#gen_image_description")!.style.display = "block"
+      canvas.toBlob((blob: Blob | null) => {
+        if(!blob) {
+          alert("Error: canvas.toBlob cannot create image")
+          return
+        }
+        const newImg = document.createElement('img');
+        const url = URL.createObjectURL(blob);
+        newImg.src = url;
+        newImg.alt = "メギド履歴書"
+        const el_result = document.getElementById("image_result")!;
+        el_result.querySelectorAll("img").forEach((el) => {
+          el.parentNode!.removeChild(el);
+        });
+        el_result.appendChild(newImg);
       });
-      el_result.appendChild(link);
     },
   );
   document.querySelectorAll("#favorite_contents input[type='checkbox']")
