@@ -1,79 +1,84 @@
 /// <reference lib="dom"/>
 import Utils from "./Utils.ts";
 
-const HIDDEN_FRONT = document.createElement("canvas")
-HIDDEN_FRONT.width = 1400
-HIDDEN_FRONT.height = 700
-const HIDDEN_BACK = document.createElement("canvas")
-HIDDEN_BACK.width = 1400
-HIDDEN_BACK.height = 700
+const HIDDEN_FRONT = document.createElement("canvas");
+HIDDEN_FRONT.width = 1400;
+HIDDEN_FRONT.height = 700;
+const HIDDEN_BACK = document.createElement("canvas");
+HIDDEN_BACK.width = 1400;
+HIDDEN_BACK.height = 700;
 const MEGIDO_EN = new Map<string, string>();
 const MEGIDO_TABLE = new Map<string, string>();
 
 enum DrawTarget {
   HiddenFront,
-  RevealedFront
+  RevealedFront,
 }
 
-function drawText(txt: string, x: number, y: number, w: number, h: number, target = DrawTarget.HiddenFront) {
-  drawTextSync(txt, x, y, w, h, target);
-  const waittime = target == DrawTarget.RevealedFront ? 1000 : 2000;
-  // wait for 1 or 2 seconds to load font, and write again. what a dirty hack!!
-  setTimeout(() => {
-    drawTextSync(txt, x, y, w, h, target);
-  }, waittime);
-}
-
-function drawTextSync(txt: string, x: number, y: number, w: number, h: number, target: DrawTarget) {
-  let ctx: CanvasRenderingContext2D
-  if (target == DrawTarget.HiddenFront) {
-    ctx = HIDDEN_FRONT.getContext("2d")!
+function drawText(
+  txt: string,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  isSubset = true,
+  target: DrawTarget = DrawTarget.HiddenFront,
+) {
+  const doIt = (fontFamily: string) => {
+    let ctx: CanvasRenderingContext2D;
+    if (target == DrawTarget.HiddenFront) {
+      ctx = HIDDEN_FRONT.getContext("2d")!;
+    } else {
+      ctx = Utils.canvasContext("#megido_front");
+    }
+    const margin = 2;
+    ctx.clearRect(x - margin, y - margin, w + margin * 2, h + margin * 2);
+    ctx.font = h + `px '${fontFamily}'`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "white";
+    ctx.fillText(txt, x + w / 2, y + h / 2);
+  };
+  if(isSubset) {
+    const font = new FontFace('Kosugi Maru Subset', 'url(/img/Kosugi-Maru-Subset.woff2)');
+    font.load().then(() => {
+      // @ts-ignore: FontFaceSet actually has .add() method for most browsers
+      document.fonts.add(font)
+      doIt("Kosugi Maru Subset")
+    })
   } else {
-    ctx = Utils.canvasContext("#megido_front")
+    doIt("Kosugi Maru")
   }
-  const margin = 2;
-  ctx.clearRect(x - margin, y - margin, w + margin * 2, h + margin * 2);
-  ctx.font = h + "px 'Kosugi Maru'";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = "white";
-  ctx.fillText(txt, x + w / 2, y + h / 2);
+  
 }
 
 function drawHeader() {
-  drawHeaderSync();
-  // wait for 2 seconds to load font, and write again. what a dirty hack!!
-  setTimeout(drawHeaderSync, 2000);
-}
-
-function drawHeaderSync() {
   const ctx = HIDDEN_FRONT.getContext("2d")!;
   ctx.clearRect(0, 0, 1400, 80);
-  const txt = "メギド履歴書";
-  ctx.font = 38 + "px 'Mochiy Pop P One'";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.shadowColor = "black";
-  ctx.shadowBlur = 7;
-  ctx.strokeStyle = "blue";
-  ctx.strokeText(txt, 700, 38);
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = "#ddccff";
-  ctx.fillText(txt, 700, 38);
-  const dt = new Date();
-  const createdAt = "作成日: " + dt.getFullYear() + "/" + (dt.getMonth() + 1) +
-    "/" +
-    dt.getDate();
-  ctx.font = 24 + "px 'Zen Kurenaido'";
-  ctx.fillStyle = "white";
-  ctx.textAlign = "right";
-  ctx.textBaseline = "bottom";
-  ctx.fillText(createdAt, 1370, 65);
+  const img = new Image();
+  img.src = "/img/title.png";
+  img.onload = () => {
+    ctx.drawImage(img, 410, 12)
+  };
+  const font = new FontFace("Zen Kurenaido", "url(/img/Zen-Kurenaido.woff2)")
+  font.load().then(()=>{
+    // @ts-ignore: FontFaceSet actually has .add() method for most browsers
+    document.fonts.add(font)
+    const dt = new Date();
+    const createdAt = "作成日: " + dt.getFullYear() + "/" + (dt.getMonth() + 1) +
+      "/" +
+      dt.getDate();
+    ctx.font = 24 + "px 'Zen Kurenaido'";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(createdAt, 1370, 65);
+  })
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   Utils.addChangeListener("#name", (target) => {
-    drawText(target.value, 700, 103, 600, 32);
+    drawText(target.value, 700, 103, 600, 32, false);
   });
   Utils.addChangeListener("#howmany_megido", (target) => {
     drawText(target.value, 830, 162, 150, 32);
@@ -94,10 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
     drawText(target.value, 860, 385, 480, 30);
   });
   Utils.addChangeListener("#comment", (target) => {
-    drawText(target.value, 631, 624, 720, 32);
+    drawText(target.value, 631, 624, 720, 32, false);
   });
   Utils.addChangeListener("#money", (target) => {
-    const ctx = Utils.canvasContext("#megido_front");
+    const ctx = HIDDEN_FRONT.getContext("2d")!;
     ctx.clearRect(1100, 205, 200, 50);
     let x = 0;
     const y = 230;
@@ -117,80 +122,80 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.stroke();
   });
 
-  document.querySelectorAll<HTMLInputElement>("#favorite_contents input[type='checkbox']").forEach(function(item){
-    item.addEventListener("change", function(ev){
-      const ctx = HIDDEN_FRONT.getContext('2d')!;
+  document.querySelectorAll<HTMLInputElement>(
+    "#favorite_contents input[type='checkbox']",
+  ).forEach(function (item) {
+    item.addEventListener("change", function (ev) {
+      const ctx = HIDDEN_FRONT.getContext("2d")!;
       const doCheck = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-        const img = new Image()
-        img.src = "/img/checkbox.png"
-        img.onload = function(){
-          ctx.drawImage(img, x, y, 35, 35)
-        }
-      }
-      const target = ev.target as HTMLInputElement
+        const img = new Image();
+        img.src = "/img/checkbox.png";
+        img.onload = function () {
+          ctx.drawImage(img, x, y, 35, 35);
+        };
+      };
+      const target = ev.target as HTMLInputElement;
       const checked = target.checked;
-      switch(target.id){
+      switch (target.id) {
         case "contents_main":
-          if(checked){
-            doCheck(ctx, 865, 436)
-          }else{
-            ctx.clearRect(865, 436, 35, 35)
+          if (checked) {
+            doCheck(ctx, 865, 436);
+          } else {
+            ctx.clearRect(865, 436, 35, 35);
           }
           break;
         case "contents_event":
-          if(checked){
-            doCheck(ctx, 1115, 436)
-          }else{
-            ctx.clearRect(1115, 436, 35, 35)
+          if (checked) {
+            doCheck(ctx, 1115, 436);
+          } else {
+            ctx.clearRect(1115, 436, 35, 35);
           }
           break;
         case "contents_pvp":
-          if(checked){
-            doCheck(ctx, 865, 466)
-          }else{
-            ctx.clearRect(865, 466, 35, 35)
+          if (checked) {
+            doCheck(ctx, 865, 466);
+          } else {
+            ctx.clearRect(865, 466, 35, 35);
           }
           break;
         case "contents_daigen":
-          if(checked){
-            doCheck(ctx, 1115, 466)
-          }else{
-            ctx.clearRect(1115, 466, 35, 35)
+          if (checked) {
+            doCheck(ctx, 1115, 466);
+          } else {
+            ctx.clearRect(1115, 466, 35, 35);
           }
           break;
         case "contents_gacha":
-          if(checked){
-            doCheck(ctx, 865, 501)
-          }else{
-            ctx.clearRect(865, 501, 35, 35)
+          if (checked) {
+            doCheck(ctx, 865, 501);
+          } else {
+            ctx.clearRect(865, 501, 35, 35);
           }
           break;
         case "contents_chara":
-          if(checked){
-            doCheck(ctx, 1115, 500)
-          }else{
-            ctx.clearRect(1115, 500, 35, 35)
+          if (checked) {
+            doCheck(ctx, 1115, 500);
+          } else {
+            ctx.clearRect(1115, 500, 35, 35);
           }
           break;
         case "contents_reiho":
-          if(checked){
-            doCheck(ctx, 865, 536)
-          }else{
-            ctx.clearRect(865, 536, 35, 35)
+          if (checked) {
+            doCheck(ctx, 865, 536);
+          } else {
+            ctx.clearRect(865, 536, 35, 35);
           }
           break;
         case "contents_raid":
-          if(checked){
-            doCheck(ctx, 1115, 533)
-          }else{
-            ctx.clearRect(1115, 533, 35, 35)
+          if (checked) {
+            doCheck(ctx, 1115, 533);
+          } else {
+            ctx.clearRect(1115, 533, 35, 35);
           }
           break;
       }
-    })
-  })
-
-
+    });
+  });
 
   Utils.addChangeListener("#megidral", (target: HTMLInputElement) => {
     const ctx = Utils.canvasContext("#megido_overlay");
@@ -261,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
       meg.value = en_name;
       meg.dispatchEvent(new Event("change"));
 
-      drawText(name, 150, 555, 380, 32, DrawTarget.RevealedFront);
+      drawText(name, 150, 555, 380, 32, true, DrawTarget.RevealedFront);
 
       const bg = new Image();
       bg.setAttribute("crossorigin", "anonymous");
@@ -286,8 +291,8 @@ document.addEventListener("DOMContentLoaded", () => {
       canvas.width = 1400;
       canvas.height = 700;
       const ctx = canvas.getContext("2d")!;
-      const dx = 22
-      const dy = 77
+      const dx = 22;
+      const dy = 77;
       ctx.drawImage(
         HIDDEN_BACK,
         0,
@@ -314,16 +319,17 @@ document.addEventListener("DOMContentLoaded", () => {
         dx,
         dy,
       );
-      document.querySelector<HTMLElement>("#gen_image_description")!.style.display = "block"
+      document.querySelector<HTMLElement>("#gen_image_description")!.style
+        .display = "block";
       canvas.toBlob((blob: Blob | null) => {
-        if(!blob) {
-          alert("Error: canvas.toBlob cannot create image")
-          return
+        if (!blob) {
+          alert("Error: canvas.toBlob cannot create image");
+          return;
         }
-        const newImg = document.createElement('img');
+        const newImg = document.createElement("img");
         const url = URL.createObjectURL(blob);
         newImg.src = url;
-        newImg.alt = "メギド履歴書"
+        newImg.alt = "メギド履歴書";
         const el_result = document.getElementById("image_result")!;
         el_result.querySelectorAll("img").forEach((el) => {
           el.parentNode!.removeChild(el);
