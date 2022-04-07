@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
   <script src="./maker.js"></script>
   <style>
-    input[type="text"]{
+   #name, #comment, h1{
       font-family: 'Kosugi Maru';
     } 
   </style>
@@ -163,7 +163,7 @@
         </select>
       </label>
       <label class="four columns">
-        <span>自前の画像を選択</span>
+        <span>画像選択</span>
         <input type="file" id="megido_image" accept="image/*">
       </label>
       <label class="four columns">
@@ -184,8 +184,8 @@
   <div style="text-align: center; position: relative; margin-top: 616px; padding-bottom: 72px">
     <div><button id="gen_image">これで確定</button></div>
 
-    <div style="display: none;" id="gen_image_description">この下に表示される画像を長押しもしくは右クリックして保存して、
-    必要ならば「<span style="user-select: all;">#メギド72 #メギド履歴書 #メギドクラスタと繋がりたい</span>」とかつけてツイートして下さい。</div>
+    <div style="display: none;" id="gen_image_description">この下の画像を長押しか右クリックで保存して、
+    必要ならば「<span style="user-select: all;">#メギド72 #メギド履歴書 #メギドクラスタと繋がりたい</span>」をつけてツイートして下さい。</div>
     <div id="image_result"></div>
   </div>
 </body>
