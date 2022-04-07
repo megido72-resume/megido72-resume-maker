@@ -39,17 +39,19 @@ function drawText(
     ctx.fillStyle = "white";
     ctx.fillText(txt, x + w / 2, y + h / 2);
   };
-  if(isSubset) {
-    const font = new FontFace('Kosugi Maru Subset', 'url(/img/Kosugi-Maru-Subset.woff2)');
+  if (isSubset) {
+    const font = new FontFace(
+      "Kosugi Maru Subset",
+      "url(/img/Kosugi-Maru-Subset.woff2)",
+    );
     font.load().then(() => {
       // @ts-ignore: FontFaceSet actually has .add() method for most browsers
-      document.fonts.add(font)
-      doIt("Kosugi Maru Subset")
-    })
+      document.fonts.add(font);
+      doIt("Kosugi Maru Subset");
+    });
   } else {
-    doIt("Kosugi Maru")
+    doIt("Kosugi Maru");
   }
-  
 }
 
 function drawHeader() {
@@ -58,12 +60,12 @@ function drawHeader() {
   const img = new Image();
   img.src = "/img/title.png";
   img.onload = () => {
-    ctx.drawImage(img, 410, 12)
+    ctx.drawImage(img, 410, 12);
   };
-  const font = new FontFace("Zen Kurenaido", "url(/img/Zen-Kurenaido.woff2)")
-  font.load().then(()=>{
+  const font = new FontFace("Zen Kurenaido", "url(/img/Zen-Kurenaido.woff2)");
+  font.load().then(() => {
     // @ts-ignore: FontFaceSet actually has .add() method for most browsers
-    document.fonts.add(font)
+    document.fonts.add(font);
     const dt = new Date();
     const createdAt = "作成日: " + dt.getFullYear() + "/" + (dt.getMonth() + 1) +
       "/" +
@@ -73,7 +75,7 @@ function drawHeader() {
     ctx.textAlign = "right";
     ctx.textBaseline = "bottom";
     ctx.fillText(createdAt, 1370, 65);
-  })
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
