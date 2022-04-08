@@ -331,7 +331,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const newImg = document.createElement("img");
         const url = URL.createObjectURL(blob);
         newImg.src = url;
-        newImg.alt = "メギド履歴書";
+        newImg.alt = "メギド履歴書";        
+        const curWidth = document.querySelector<HTMLElement>("#canvas_container")!.offsetWidth;
+        if (curWidth < 1400) {
+          newImg.width = curWidth;
+          newImg.height = curWidth / 2;
+        }
+
         const el_result = document.getElementById("image_result")!;
         el_result.querySelectorAll("img").forEach((el) => {
           el.parentNode!.removeChild(el);
