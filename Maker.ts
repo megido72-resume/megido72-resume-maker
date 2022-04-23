@@ -261,11 +261,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   Utils.addChangeListener("#megidral", async (target: HTMLInputElement) => {
     await drawMegidoral(target.value);
-    showMegidoAsImg()
+    showMegidoAsImg();
   });
 
   Utils.addChangeListener("#megido_image", (target: HTMLInputElement) => {
-    const fileData = target.files![0];
+    if (!target.files?.length) {
+      return;
+    }
+    const fileData = target.files?.item(0)!;
+    const txtElem = document.querySelector<HTMLSpanElement>(
+      "#megido_image_txt",
+    )!;
+    txtElem.innerText = fileData.name.substring(0, 8);
     const reader = new FileReader();
     reader.onload = () => {
       const ctx = MEGIDO_FRONT.getContext("2d")!;
@@ -306,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async (target: HTMLInputElement) => {
       const name = MEGIDO_TABLE.get(target.value)!;
       const en_name = MEGIDO_EN.get(name) || "";
-      
+
       document.querySelector<HTMLInputElement>("#megidral")!.value = en_name;
 
       const imgPromise = new Promise<void>((resolve, _) => {
