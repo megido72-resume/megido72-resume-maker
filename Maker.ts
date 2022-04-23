@@ -1,12 +1,28 @@
 /// <reference lib="dom"/>
+
 import Utils from "./Utils.ts";
 
-const HIDDEN_FRONT = document.createElement("canvas");
-HIDDEN_FRONT.width = 1400;
-HIDDEN_FRONT.height = 700;
-const HIDDEN_BACK = document.createElement("canvas");
-HIDDEN_BACK.width = 1400;
-HIDDEN_BACK.height = 700;
+const FULL_WIDTH = 1400;
+const FULL_HEIGHT = 700;
+const MEGIDO_WIDTH = 549;
+const MEGIDO_HEIGHT = 606;
+
+function createCanvas(
+  width: number,
+  height: number,
+): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
+}
+
+const HIDDEN_FRONT = createCanvas(FULL_WIDTH, FULL_HEIGHT);
+const HIDDEN_BACK = createCanvas(FULL_WIDTH, FULL_HEIGHT);
+const MEGIDO_BACK = createCanvas(MEGIDO_WIDTH, MEGIDO_HEIGHT);
+const MEGIDO_FRONT = createCanvas(MEGIDO_WIDTH, MEGIDO_HEIGHT);
+const MEGIDO_OVERLAY = createCanvas(MEGIDO_WIDTH, MEGIDO_HEIGHT);
+
 const MEGIDO_EN = new Map<string, string>();
 const MEGIDO_TABLE = new Map<string, string>();
 
@@ -15,7 +31,7 @@ enum DrawTarget {
   RevealedFront,
 }
 
-function drawText(
+async function drawText(
   txt: string,
   x: number,
   y: number,
@@ -24,39 +40,63 @@ function drawText(
   isSubset = true,
   target: DrawTarget = DrawTarget.HiddenFront,
 ) {
-  const doIt = (fontFamily: string) => {
-    let ctx: CanvasRenderingContext2D;
-    if (target == DrawTarget.HiddenFront) {
-      ctx = HIDDEN_FRONT.getContext("2d")!;
+  const fontFamily = await new Promise<string>((resolve, _) => {
+    if (isSubset) {
+      const font = new FontFace(
+        "Kosugi Maru Subset",
+        "url(/img/Kosugi-Maru-Subset.woff2)",
+      );
+      font.load().then(() => {
+        // @ts-ignore: FontFaceSet actually has .add() method for most browsers
+        document.fonts.add(font);
+        resolve("Kosugi Maru Subset");
+      });
     } else {
-      ctx = Utils.canvasContext("#megido_front");
+      resolve("Kosugi Maru");
     }
-    const margin = 2;
-    ctx.clearRect(x - margin, y - margin, w + margin * 2, h + margin * 2);
-    ctx.font = h + `px '${fontFamily}'`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "white";
-    ctx.fillText(txt, x + w / 2, y + h / 2);
-  };
-  if (isSubset) {
-    const font = new FontFace(
-      "Kosugi Maru Subset",
-      "url(/img/Kosugi-Maru-Subset.woff2)",
-    );
-    font.load().then(() => {
-      // @ts-ignore: FontFaceSet actually has .add() method for most browsers
-      document.fonts.add(font);
-      doIt("Kosugi Maru Subset");
-    });
+  });
+  let ctx: CanvasRenderingContext2D;
+  if (target == DrawTarget.HiddenFront) {
+    ctx = HIDDEN_FRONT.getContext("2d")!;
   } else {
-    doIt("Kosugi Maru");
+    ctx = MEGIDO_FRONT.getContext("2d")!;
   }
+  const margin = 2;
+  ctx.clearRect(x - margin, y - margin, w + margin * 2, h + margin * 2);
+  ctx.font = h + `px '${fontFamily}'`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "white";
+  ctx.fillText(txt, x + w / 2, y + h / 2);
+}
+
+function showMegidoAsImg(): Promise<void> {
+  const canvas = createCanvas(MEGIDO_WIDTH, MEGIDO_HEIGHT);
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(MEGIDO_BACK, 0, 0);
+  ctx.drawImage(MEGIDO_FRONT, 0, 0);
+  ctx.drawImage(MEGIDO_OVERLAY, 0, 0);
+  return new Promise<void>((resolve, reject) => {
+    canvas.toBlob((blob: Blob | null) => {
+      if (!blob) {
+        alert("Error: canvas.toBlob cannot create image");
+        reject();
+      } else {
+        const img = document.getElementById("megido_img")! as HTMLImageElement;
+        const url = URL.createObjectURL(blob);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+        resolve();
+      }
+    });
+  });
 }
 
 function drawHeader() {
   const ctx = HIDDEN_FRONT.getContext("2d")!;
-  ctx.clearRect(0, 0, 1400, 80);
+  ctx.clearRect(0, 0, FULL_WIDTH, 80);
   const img = new Image();
   img.src = "/img/title.png";
   img.onload = () => {
@@ -198,9 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-
-  Utils.addChangeListener("#megidral", (target: HTMLInputElement) => {
-    const ctx = Utils.canvasContext("#megido_overlay");
+  async function drawMegidoral(txt: string) {
+    const ctx = MEGIDO_OVERLAY.getContext("2d")!;
     const x = 538;
     const y = 11;
     const h = 32;
@@ -210,24 +249,26 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
       return;
     }
-    const font = new FontFace("Megidral", "url(/img/Megidral-Regular.ttf)");
-    font.load().then((fnt) => {
-      // @ts-ignore: FontFaceSet actually has .add() method for most browsers
-      document.fonts.add(fnt);
-      const txt = target.value;
-      ctx.font = h + "px 'Megidral'";
-      ctx.textAlign = "right";
-      ctx.textBaseline = "top";
-      ctx.fillStyle = "#CCCCCCDD";
-      ctx.fillText(txt, x, y);
-    });
+    const font =
+      await (new FontFace("Megidral", "url(/img/Megidral-Regular.ttf)")).load();
+    // @ts-ignore: FontFaceSet actually has .add() method for most browsers
+    document.fonts.add(font);
+    ctx.font = h + "px 'Megidral'";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "#CCCCCCDD";
+    ctx.fillText(txt, x, y);
+  }
+  Utils.addChangeListener("#megidral", async (target: HTMLInputElement) => {
+    await drawMegidoral(target.value);
+    showMegidoAsImg()
   });
 
   Utils.addChangeListener("#megido_image", (target: HTMLInputElement) => {
     const fileData = target.files![0];
     const reader = new FileReader();
     reader.onload = () => {
-      const ctx = Utils.canvasContext("#megido_front");
+      const ctx = MEGIDO_FRONT.getContext("2d")!;
       ctx.clearRect(6, 6, 537, 537);
       const img = new Image();
       // @ts-ignore: both has same type
@@ -251,6 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
           sh = h;
         }
         ctx.drawImage(img, sx, sy, sw, sh, 6, 6, 537, 537);
+        showMegidoAsImg();
       };
     };
     reader.readAsDataURL(fileData);
@@ -261,37 +303,41 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   Utils.addChangeListener(
     "#recommend_megido",
-    (target: HTMLInputElement) => {
-      const meg = document.querySelector<HTMLInputElement>("#megidral")!;
+    async (target: HTMLInputElement) => {
       const name = MEGIDO_TABLE.get(target.value)!;
       const en_name = MEGIDO_EN.get(name) || "";
-      meg.value = en_name;
-      meg.dispatchEvent(new Event("change"));
+      
+      document.querySelector<HTMLInputElement>("#megidral")!.value = en_name;
 
-      drawText(name, 150, 555, 380, 32, true, DrawTarget.RevealedFront);
-
-      const bg = new Image();
-      bg.setAttribute("crossorigin", "anonymous");
-      bg.src = "/character/character_bg.jpg";
-      const ctx = Utils.canvasContext("#megido_front");
-      bg.onload = () => {
-        ctx.clearRect(6, 6, 537, 537);
-        ctx.drawImage(bg, 6, 6, 537, 537);
-        const img = new Image();
-        img.setAttribute("crossorigin", "anonymous");
-        img.src = "/character/" + target.value + ".png";
-        img.onload = () => {
-          ctx.drawImage(img, 31, 36, 500, 500);
+      const imgPromise = new Promise<void>((resolve, _) => {
+        const bg = new Image();
+        bg.setAttribute("crossorigin", "anonymous");
+        bg.src = "/character/character_bg.jpg";
+        const ctx = MEGIDO_FRONT.getContext("2d")!;
+        bg.onload = () => {
+          ctx.clearRect(6, 6, 537, 537);
+          ctx.drawImage(bg, 6, 6, 537, 537);
+          const img = new Image();
+          img.setAttribute("crossorigin", "anonymous");
+          img.src = "/character/" + target.value + ".png";
+          img.onload = () => {
+            ctx.drawImage(img, 31, 36, 500, 500);
+            resolve();
+          };
         };
-      };
+      });
+      await Promise.all([
+        drawMegidoral(en_name),
+        drawText(name, 150, 555, 380, 32, true, DrawTarget.RevealedFront),
+        imgPromise,
+      ]);
+      showMegidoAsImg();
     },
   );
   document.querySelector<HTMLButtonElement>("#gen_image")!.addEventListener(
     "click",
     (_: Event) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1400;
-      canvas.height = 700;
+      const canvas = createCanvas(FULL_WIDTH, FULL_HEIGHT);
       const ctx = canvas.getContext("2d")!;
       const dx = 22;
       const dy = 77;
@@ -307,17 +353,17 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       ctx.drawImage(
-        document.querySelector<HTMLCanvasElement>("#megido_back")!,
+        MEGIDO_BACK,
         dx,
         dy,
       );
       ctx.drawImage(
-        document.querySelector<HTMLCanvasElement>("#megido_front")!,
+        MEGIDO_FRONT,
         dx,
         dy,
       );
       ctx.drawImage(
-        document.querySelector<HTMLCanvasElement>("#megido_overlay")!,
+        MEGIDO_OVERLAY,
         dx,
         dy,
       );
@@ -331,13 +377,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const newImg = document.createElement("img");
         const url = URL.createObjectURL(blob);
         newImg.src = url;
-        newImg.alt = "メギド履歴書";        
-        const curWidth = document.querySelector<HTMLElement>("#canvas_container")!.offsetWidth;
-        if (curWidth < 1400) {
-          newImg.width = curWidth;
-          newImg.height = curWidth / 2;
-        }
-
+        newImg.alt = "メギド履歴書";
+        newImg.style.width = "100%";
+        newImg.style.height = "auto";
+        newImg.style.maxWidth = `${FULL_WIDTH}px`;
         const el_result = document.getElementById("image_result")!;
         el_result.querySelectorAll("img").forEach((el) => {
           el.parentNode!.removeChild(el);
@@ -349,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("#favorite_contents input[type='checkbox']")
     .forEach((item) => {
       item.addEventListener("change", (ev: Event) => {
-        const ctx = Utils.canvasContext("#megido_front");
+        const ctx = MEGIDO_FRONT.getContext("2d")!;
         const doCheck = (
           ctx: CanvasRenderingContext2D,
           x: number,
@@ -424,33 +467,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-  const container = document.querySelector<HTMLDivElement>(
-    "#canvas_container",
-  )!;
-  const calcLeft = (canvas: HTMLCanvasElement): string => {
-    const x = (container.clientWidth - canvas.width) / 2;
-    if (x < 0) {
-      return "0px";
-    } else {
-      return `${x}px`;
-    }
-  };
-  const alignCenter = () => {
-    ["#megido_back", "#megido_front", "#megido_overlay"].forEach(
-      (selector: string) => {
-        const canvas = document.querySelector<HTMLCanvasElement>(selector)!;
-        canvas.style.left = calcLeft(canvas);
-      },
-    );
-  };
-  alignCenter();
-  const resizeObserver = new ResizeObserver(alignCenter);
-  resizeObserver.observe(container);
-
   const img = new Image();
   img.src = "/img/recommend_bg.png";
   img.onload = () => {
-    const ctx = Utils.canvasContext("#megido_back");
+    const ctx = MEGIDO_BACK.getContext("2d")!;
     ctx.drawImage(
       img,
       0,
