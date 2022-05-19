@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
             img.setAttribute("crossorigin", "anonymous");
             img.src = "/character/" + target.value + ".png";
             img.onload = () => {
-              ctx.drawImage(img, 31, 36, 500, 500);
+              ctx.drawImage(img, 21, 21, 520, 520);
               resolve();
             };
           };
