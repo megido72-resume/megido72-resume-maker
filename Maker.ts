@@ -1,7 +1,7 @@
 /// <reference lib="dom"/>
 
 import Utils from "./Utils.ts";
-
+import { RgbaStringColorPicker } from "https://unpkg.com/vanilla-colorful@0.6.2/rgba-string-color-picker.js?module";
 const FULL_WIDTH = 1400;
 const FULL_HEIGHT = 700;
 const MEGIDO_WIDTH = 549;
@@ -253,10 +253,13 @@ document.addEventListener("DOMContentLoaded", () => {
       await (new FontFace("Megidral", "url(/img/Megidral-Regular.ttf)")).load();
     // @ts-ignore: FontFaceSet actually has .add() method for most browsers
     document.fonts.add(font);
+    const color =
+      document.querySelector<RgbaStringColorPicker>("rgba-string-color-picker")!
+        .color;
     ctx.font = h + "px 'Megidral'";
     ctx.textAlign = "right";
     ctx.textBaseline = "top";
-    ctx.fillStyle = "#CCCCCCDD";
+    ctx.fillStyle = color;
     ctx.fillText(txt, x, y);
   }
   Utils.addChangeListener("#megidral", async (target: HTMLInputElement) => {
@@ -342,8 +345,18 @@ document.addEventListener("DOMContentLoaded", () => {
           imgPromise,
         ]);
       } else {
-        MEGIDO_FRONT.getContext("2d")?.clearRect(0, 0, MEGIDO_WIDTH, MEGIDO_HEIGHT);
-        MEGIDO_OVERLAY.getContext("2d")?.clearRect(0, 0, MEGIDO_WIDTH, MEGIDO_HEIGHT);
+        MEGIDO_FRONT.getContext("2d")?.clearRect(
+          0,
+          0,
+          MEGIDO_WIDTH,
+          MEGIDO_HEIGHT,
+        );
+        MEGIDO_OVERLAY.getContext("2d")?.clearRect(
+          0,
+          0,
+          MEGIDO_WIDTH,
+          MEGIDO_HEIGHT,
+        );
       }
       showMegidoAsImg();
     },
@@ -543,5 +556,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     });
+  });
+  const picker = document.querySelector<RgbaStringColorPicker>(
+    "rgba-string-color-picker",
+  );
+  picker!.addEventListener("color-changed", (event) => {
+    document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
+      new Event("change"),
+    );
   });
 });
