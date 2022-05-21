@@ -361,6 +361,14 @@ document.addEventListener("DOMContentLoaded", () => {
       showMegidoAsImg();
     },
   );
+  document.querySelector<HTMLButtonElement>("#toggle_detail_conf")!
+    .addEventListener(
+      "click",
+      (_: Event) => {
+        const el = document.querySelector<HTMLDivElement>("#detail_conf")!;
+        el.classList.toggle("d-none");
+      },
+    );
   document.querySelector<HTMLButtonElement>("#gen_image")!.addEventListener(
     "click",
     (_: Event) => {
@@ -394,8 +402,8 @@ document.addEventListener("DOMContentLoaded", () => {
         dx,
         dy,
       );
-      document.querySelector<HTMLElement>("#gen_image_description")!.style
-        .display = "block";
+      document.querySelector<HTMLElement>("#gen_image_description")!.classList
+        .remove("d-none");
       canvas.toBlob((blob: Blob | null) => {
         if (!blob) {
           alert("Error: canvas.toBlob cannot create image");
@@ -559,8 +567,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   const picker = document.querySelector<RgbaStringColorPicker>(
     "rgba-string-color-picker",
-  );
-  picker!.addEventListener("color-changed", (event) => {
+  )!;
+  picker.addEventListener("color-changed", (event) => {
     document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
       new Event("change"),
     );
