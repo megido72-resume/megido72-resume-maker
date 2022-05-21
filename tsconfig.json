@@ -1,10 +1,5 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
-    "module": "commonjs",
-    "lib": ["DOM", "ESNext"],
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "lib": ["DOM", "ESNext"]
   }
 }

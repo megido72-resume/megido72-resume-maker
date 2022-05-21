@@ -313,6 +313,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const meg = document.querySelector<HTMLInputElement>("#megidral")!;
     meg.dispatchEvent(new Event("change"));
   });
+  async function drawMegidoName(name: string, isSubset: boolean) {
+    await drawText(name, 150, 555, 380, 32, isSubset, DrawTarget.RevealedFront);
+  }
+  Utils.addChangeListener(
+    "#recommend_megido_name",
+    async (el: HTMLInputElement) => {
+      await drawMegidoName(el.value, false);
+      showMegidoAsImg();
+    },
+  );
   Utils.addChangeListener(
     "#recommend_megido",
     async (target: HTMLInputElement) => {
@@ -320,6 +330,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const en_name = MEGIDO_EN.get(name) || "";
 
       document.querySelector<HTMLInputElement>("#megidral")!.value = en_name;
+      document.querySelector<HTMLInputElement>("#recommend_megido_name")!
+        .value = name;
 
       if (target.value) {
         const imgPromise = new Promise<void>((resolve, _) => {
@@ -341,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         await Promise.all([
           drawMegidoral(en_name),
-          drawText(name, 150, 555, 380, 32, true, DrawTarget.RevealedFront),
+          drawMegidoName(name, true),
           imgPromise,
         ]);
       } else {
