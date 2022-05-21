@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Utils.addChangeListener(
     "#recommend_megido",
     async (target: HTMLInputElement) => {
-      const name = MEGIDO_TABLE.get(target.value)!;
+      const name = MEGIDO_TABLE.get(target.value) || "";
       const en_name = MEGIDO_EN.get(name) || "";
 
       document.querySelector<HTMLInputElement>("#megidral")!.value = en_name;
@@ -580,7 +580,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const picker = document.querySelector<RgbaStringColorPicker>(
     "rgba-string-color-picker",
   )!;
-  picker.addEventListener("color-changed", (event) => {
+  picker.addEventListener("color-changed", (_) => {
     document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
       new Event("change"),
     );
