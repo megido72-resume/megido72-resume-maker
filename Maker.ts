@@ -118,7 +118,7 @@ function drawHeader() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function simpleChangeListeners() {
   Utils.addChangeListener("#name", (target) => {
     drawText(target.value, 700, 103, 600, 32, false);
   });
@@ -163,7 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.arc(x, y, 22, 0, 2 * Math.PI);
     ctx.stroke();
   });
+}
 
+function favoriteContentListener() {
   document.querySelectorAll<HTMLInputElement>(
     "#favorite_contents input[type='checkbox']",
   ).forEach(function (item) {
@@ -238,6 +240,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+}
+
+function drawMegidoListener() {
   async function drawMegidoral(txt: string) {
     const ctx = MEGIDO_OVERLAY.getContext("2d")!;
     const x = 538;
@@ -373,6 +378,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showMegidoAsImg();
     },
   );
+}
+
+function bottomButtonListener() {
   document.querySelector<HTMLButtonElement>("#toggle_detail_conf")!
     .addEventListener(
       "click",
@@ -436,7 +444,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     },
   );
+}
 
+function startUp() {
   const img = new Image();
   img.src = "/img/recommend_bg.png";
   img.onload = () => {
@@ -510,6 +520,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   });
+}
+
+function colorPicker() {
   const picker = document.querySelector<RgbaStringColorPicker>(
     "rgba-string-color-picker",
   )!;
@@ -518,4 +531,33 @@ document.addEventListener("DOMContentLoaded", () => {
       new Event("change"),
     );
   });
+}
+
+function debugCanvas() {
+  const body = document.querySelector<HTMLBodyElement>("body")!;
+  const ins = (msg: string) => {
+    const div = document.createElement("div");
+    div.innerText = msg;
+    body.append(div);
+  };
+  ins("HIDDEN_FRONT");
+  body.append(HIDDEN_FRONT);
+  ins("HIDDEN_BACK");
+  body.append(HIDDEN_BACK);
+  ins("MEGIDO_BACK");
+  body.append(MEGIDO_BACK);
+  ins("MEGIDO_FRONT");
+  body.append(MEGIDO_FRONT);
+  ins("MEGIDO_OVERLAY");
+  body.append(MEGIDO_OVERLAY);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  simpleChangeListeners();
+  favoriteContentListener();
+  drawMegidoListener();
+  bottomButtonListener();
+  startUp();
+  colorPicker();
+  //debugCanvas();
 });
