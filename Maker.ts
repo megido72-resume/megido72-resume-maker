@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.drawImage(bg, 6, 6, 537, 537);
             const img = new Image();
             img.setAttribute("crossorigin", "anonymous");
-            img.src = "/character/" + target.value + ".png";
+            img.src = `/character/${target.value}.png`;
             img.onload = () => {
               ctx.drawImage(img, 21, 21, 520, 520);
               resolve();
@@ -559,6 +559,16 @@ document.addEventListener("DOMContentLoaded", () => {
         n: string | null;
         re_n: string | null;
       }
+      [["ソロモン", "solomon"], ["シバの女王", "sheva"]].forEach(
+        ([ja, fn]) => {
+          const opt = document.createElement("option");
+          opt.text = ja;
+          opt.value = fn;
+          sel.add(opt);
+          MEGIDO_TABLE.set(fn, ja);
+        },
+      );
+
       json.list.forEach((item: megido) => {
         if (item.n) {
           const opt = document.createElement("option");
