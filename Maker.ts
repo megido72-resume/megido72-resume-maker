@@ -192,62 +192,39 @@ function favoriteContentListener() {
       };
       const target = ev.target as HTMLInputElement;
       const checked = target.checked;
+      const checkOrClear = (x: number, y: number) => {
+        if (checked) {
+          doCheck(ctx, x, y);
+        } else {
+          ctx.clearRect(x, y, 35, 35);
+        }
+      };
+      const left1 = 865;
+      const left2 = 1115;
       switch (target.id) {
-        case "contents_main":
-          if (checked) {
-            doCheck(ctx, 865, 436);
-          } else {
-            ctx.clearRect(865, 436, 35, 35);
-          }
+        case "contents_1":
+          checkOrClear(left1, 436);
           break;
-        case "contents_event":
-          if (checked) {
-            doCheck(ctx, 1115, 436);
-          } else {
-            ctx.clearRect(1115, 436, 35, 35);
-          }
+        case "contents_2":
+          checkOrClear(left2, 436);
           break;
-        case "contents_pvp":
-          if (checked) {
-            doCheck(ctx, 865, 466);
-          } else {
-            ctx.clearRect(865, 466, 35, 35);
-          }
+        case "contents_3":
+          checkOrClear(left1, 468);
           break;
-        case "contents_daigen":
-          if (checked) {
-            doCheck(ctx, 1115, 466);
-          } else {
-            ctx.clearRect(1115, 466, 35, 35);
-          }
+        case "contents_4":
+          checkOrClear(left2, 468);
           break;
-        case "contents_gacha":
-          if (checked) {
-            doCheck(ctx, 865, 501);
-          } else {
-            ctx.clearRect(865, 501, 35, 35);
-          }
+        case "contents_5":
+          checkOrClear(left1, 502);
           break;
-        case "contents_chara":
-          if (checked) {
-            doCheck(ctx, 1115, 500);
-          } else {
-            ctx.clearRect(1115, 500, 35, 35);
-          }
+        case "contents_6":
+          checkOrClear(left2, 502);
           break;
-        case "contents_reiho":
-          if (checked) {
-            doCheck(ctx, 865, 536);
-          } else {
-            ctx.clearRect(865, 536, 35, 35);
-          }
+        case "contents_7":
+          checkOrClear(left1, 537);
           break;
-        case "contents_raid":
-          if (checked) {
-            doCheck(ctx, 1115, 533);
-          } else {
-            ctx.clearRect(1115, 533, 35, 35);
-          }
+        case "contents_8":
+          checkOrClear(left2, 536);
           break;
       }
     });
