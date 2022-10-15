@@ -271,11 +271,11 @@ function drawMegidoThumb(stem: string) {
 }
 
 function drawMegidoListener() {
-  async function drawMegidoral(txt: string) {
+  async function drawMegidral(txt: string) {
     const ctx = MEGIDO_OVERLAY.getContext("2d")!;
     ctx.clearRect(0, 0, ctx.canvas.width, 550);
     if (
-      !document.querySelector<HTMLInputElement>("#enable_megidoral")!.checked
+      !document.querySelector<HTMLInputElement>("#enable_megidral")!.checked
     ) {
       return;
     }
@@ -287,10 +287,10 @@ function drawMegidoListener() {
       document.querySelector<RgbaStringColorPicker>("rgba-string-color-picker")!
         .color;
     let fontSize =
-      document.querySelector<HTMLInputElement>("#megidoral_size")!.value;
+      document.querySelector<HTMLInputElement>("#megidral_size")!.value;
     ctx.font = fontSize + "px 'Megidral'";
     const pos =
-      document.querySelector<HTMLSelectElement>("#megidoral_pos")!.value;
+      document.querySelector<HTMLSelectElement>("#megidral_pos")!.value;
     let x, y;
     switch (pos) {
       case "lower_left":
@@ -334,7 +334,7 @@ function drawMegidoListener() {
     ctx.fillText(txt, x, y);
   }
   Utils.addChangeListener("#megidral", async (target: HTMLInputElement) => {
-    await drawMegidoral(target.value);
+    await drawMegidral(target.value);
     showMegidoAsImg();
   });
 
@@ -381,7 +381,7 @@ function drawMegidoListener() {
     };
     reader.readAsDataURL(fileData);
   });
-  Utils.addChangeListener("#enable_megidoral", (_: HTMLInputElement) => {
+  Utils.addChangeListener("#enable_megidral", (_: HTMLInputElement) => {
     const meg = document.querySelector<HTMLInputElement>("#megidral")!;
     meg.dispatchEvent(new Event("change"));
   });
@@ -408,7 +408,7 @@ function drawMegidoListener() {
       if (target.value) {
         const imgPromise = drawMegidoThumb(target.value);
         await Promise.all([
-          drawMegidoral(en_name),
+          drawMegidral(en_name),
           drawMegidoName(name, true),
           imgPromise,
         ]);
@@ -431,7 +431,7 @@ function drawMegidoListener() {
     },
   );
   Utils.addChangeListener(
-    "#megidoral_pos",
+    "#megidral_pos",
     (_) => {
       document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
         new Event("change"),
@@ -439,7 +439,7 @@ function drawMegidoListener() {
     },
   );
   Utils.addChangeListener(
-    "#megidoral_size",
+    "#megidral_size",
     (_) => {
       document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
         new Event("change"),
