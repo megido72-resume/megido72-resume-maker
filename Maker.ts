@@ -273,7 +273,6 @@ function drawMegidoThumb(stem: string) {
 function drawMegidoListener() {
   async function drawMegidoral(txt: string) {
     const ctx = MEGIDO_OVERLAY.getContext("2d")!;
-    const h = 32;
     ctx.clearRect(0, 0, ctx.canvas.width, 550);
     if (
       !document.querySelector<HTMLInputElement>("#enable_megidoral")!.checked
@@ -287,7 +286,9 @@ function drawMegidoListener() {
     const color =
       document.querySelector<RgbaStringColorPicker>("rgba-string-color-picker")!
         .color;
-    ctx.font = h + "px 'Megidral'";
+    let fontSize =
+      document.querySelector<HTMLInputElement>("#megidoral_size")!.value;
+    ctx.font = fontSize + "px 'Megidral'";
     const pos =
       document.querySelector<HTMLSelectElement>("#megidoral_pos")!.value;
     let x, y;
@@ -431,6 +432,14 @@ function drawMegidoListener() {
   );
   Utils.addChangeListener(
     "#megidoral_pos",
+    (_) => {
+      document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
+        new Event("change"),
+      );
+    },
+  );
+  Utils.addChangeListener(
+    "#megidoral_size",
     (_) => {
       document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
         new Event("change"),
