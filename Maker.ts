@@ -273,8 +273,6 @@ function drawMegidoThumb(stem: string) {
 function drawMegidoListener() {
   async function drawMegidoral(txt: string) {
     const ctx = MEGIDO_OVERLAY.getContext("2d")!;
-    const x = 538;
-    const y = 11;
     const h = 32;
     ctx.clearRect(0, 0, ctx.canvas.width, 550);
     if (
@@ -290,8 +288,47 @@ function drawMegidoListener() {
       document.querySelector<RgbaStringColorPicker>("rgba-string-color-picker")!
         .color;
     ctx.font = h + "px 'Megidral'";
-    ctx.textAlign = "right";
-    ctx.textBaseline = "top";
+    const pos =
+      document.querySelector<HTMLSelectElement>("#megidoral_pos")!.value;
+    let x, y;
+    switch (pos) {
+      case "lower_left":
+        x = 11;
+        y = 538;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "bottom";
+        break;
+      case "lower_right":
+        x = 538;
+        y = 538;
+        ctx.textAlign = "right";
+        ctx.textBaseline = "bottom";
+        break;
+      case "upper_left":
+        x = 11;
+        y = 11;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        break;
+      case "upper_center":
+        x = 275;
+        y = 11;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        break;
+      case "lower_center":
+        x = 275;
+        y = 538;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        break;
+      default: // upper right
+        x = 538;
+        y = 11;
+        ctx.textAlign = "right";
+        ctx.textBaseline = "top";
+        break;
+    }
     ctx.fillStyle = color;
     ctx.fillText(txt, x, y);
   }
@@ -390,6 +427,14 @@ function drawMegidoListener() {
       }
       MEGIDO_SHOW_STATE = ShowState.MegidoThumb;
       showMegidoAsImg();
+    },
+  );
+  Utils.addChangeListener(
+    "#megidoral_pos",
+    (_) => {
+      document.querySelector<HTMLInputElement>("#megidral")!.dispatchEvent(
+        new Event("change"),
+      );
     },
   );
 }
