@@ -1,3 +1,4 @@
 deploy
 .vscode
 _venv
+__pycache__
