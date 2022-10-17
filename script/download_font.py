@@ -18,8 +18,8 @@ FONT_PATH = BASE / "deploy" / "img" / "Kosugi-Maru-Subset.woff2"
 
 
 def download_font(font_url: str):
-    res = requests.get(font_url, stream=True)
-    with FONT_PATH.open("wb") as fout:
+    with (FONT_PATH.open("wb") as fout,
+          requests.get(font_url, stream=True) as res):
         copyfileobj(res.raw, fout)
 
 
