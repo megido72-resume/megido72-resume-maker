@@ -51,6 +51,8 @@ def main():
     eng = load_eng()
     not_in_eng = set()
     img_not_downloaded = []
+    if not list_added:
+        print("no new megido")
     thumb_not_created = []
     for i, (name, img, num, is_re) in enumerate(list_added):
         name_s = name if not is_re else name + " (Re)"
@@ -70,10 +72,10 @@ def main():
         print(f"WARN: {not_in_eng} is not in megido_eng.csv")
         exit_code = 1
     if img_not_downloaded:
-        print(f"WARN: image for {img_not_downloaded} not yet downloaded. execute `just download-img`")
+        print(f"WARN: image for {img_not_downloaded} not yet downloaded. execute `download_img.py`")
         exit_code = 1
     if thumb_not_created:
-        print(f"WARN: thumbnail for {thumb_not_created} not yet created. execute `just gen-thumbnail`")
+        print(f"WARN: thumbnail for {thumb_not_created} not yet created. execute `gen_thumbnail.py`")
         exit_code = 1
     sys.exit(exit_code)
 

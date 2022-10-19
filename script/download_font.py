@@ -55,7 +55,7 @@ def main():
     if not font_url:
         raise Exception(f"cannot find font url in: {res.text}")
     download_font(font_url)
-    print(f"Successfully saved to: {FONT_PATH}")
+    print(f"SUCCESS: saved to -> {FONT_PATH}")
 
 
 if __name__ == "__main__":
