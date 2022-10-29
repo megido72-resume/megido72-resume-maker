@@ -1,7 +1,7 @@
 default:
-  just --list
+  @just --list
 
-make:
+build:
   deno bundle -c tsconfig.json Maker.ts deploy/maker.js
   @for x in index.html data/megido_eng.csv; do cp -uv $x deploy/$x; done
 
@@ -13,6 +13,9 @@ prepare:
 check:
   python script/diff_check.py
 
-commit: check
+deploy: check build
   python script/download_font.py
   python script/commit_list.py
+
+clean:
+  rm deploy/data/megido_list_new.json

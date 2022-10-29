@@ -26,10 +26,17 @@ def load_eng():
     return data
 
 def main():
-    with LIST_OLD.open() as fin:
-        lst_old = json.load(fin)
-    with LIST_NEW.open() as fin:
-        lst_new = json.load(fin)
+    try:
+        with LIST_OLD.open() as fin:
+            lst_old = json.load(fin)
+    except FileNotFoundError:
+        lst_old = {"list": []}
+    try:
+        with LIST_NEW.open() as fin:
+            lst_new = json.load(fin)
+    except FileNotFoundError:
+        print(f"ERROR: {LIST_NEW} not found. run ./script/download_list.py first.")
+        sys.exit(1)
     dict_old = {}
     list_added = []
     for item in lst_old["list"]:
