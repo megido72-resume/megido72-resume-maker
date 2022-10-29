@@ -15,7 +15,7 @@ def main():
         for item in data["list"]:
             del item["img"]
             del item["re_img"]
-        json.dump(data, fout)
+        json.dump(data, fout, indent=2)
     print(f"SUCCESS: {LIST_IN} -> {LIST_OUT}")
     print(f"you can delete {LIST_IN}")
 

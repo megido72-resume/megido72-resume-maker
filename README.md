@@ -16,20 +16,26 @@ You can generate an image with your game progress and play style and share it on
 
 # How to Use
 
-1. Run following command to download megido image from offcial site and create thumbnail.
+1. Clone this repository to your computer.
+
+```
+$ git clone --recurse-submodules git@github.com:megido72-resume/megido72-resume-maker.git
+```
+
+2. Run following command to download megido image from offcial site and create thumbnail.
 
 ```bash
 $ just prepare
 ```
 
-2. Run following command to check new megido. if there is new megido, edit `data/megido_eng.csv` and run the command again.
+3. Run following command to check new megido. if there is new megido, edit `data/megido_eng.csv` and run the command again.
 
 ```bash
 $ just check
 ```
 
 
-3. Finally you can deploy all the data to `./deploy`.
+4. Finally you can deploy all the data to `./deploy`.
 ```bash
 $ just deploy
 ```
