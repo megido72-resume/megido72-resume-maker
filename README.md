@@ -1,5 +1,5 @@
 # What is This ?
-This software is unofficial tool for smartphone game player called Megido 72, which is developed by DeNA.
+This software is unofficial tool for smartphone game called Megido 72, which is developed by DeNA.
 You can generate an image with your game progress and play style and share it on Twitter.
 
 # Prerequirements
@@ -16,7 +16,7 @@ You can generate an image with your game progress and play style and share it on
 
 # How to Use
 
-1. Run following command to download megido image from offcial cite and create thumbnail.
+1. Run following command to download megido image from offcial site and create thumbnail.
 
 ```bash
 $ just prepare
@@ -36,5 +36,4 @@ $ just deploy
 
 # Misc
 
-list of megido english name is taken from, which is maintained by: [@NANAKI\_megido72](https://twitter.com/nanaki_megido72)
-  [here](https://docs.google.com/spreadsheets/d/1obGyQKdrTsxaOAe6sCNOIfvT8TA_apZ6c_o78pvUOB8/edit#gid=0)
+list of megido english name is taken from [here](https://docs.google.com/spreadsheets/d/1obGyQKdrTsxaOAe6sCNOIfvT8TA_apZ6c_o78pvUOB8/edit#gid=0).
