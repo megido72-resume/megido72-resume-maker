@@ -27,6 +27,15 @@ const MEGIDO_OVERLAY = createCanvas(MEGIDO_WIDTH, MEGIDO_HEIGHT);
 const MEGIDO_EN = new Map<string, string>();
 const MEGIDO_TABLE = new Map<string, string>();
 
+interface Megido {
+  name: string;
+  n: string | null;
+  re_n: string | null;
+}
+var MEGIDO_LIST: Megido[] = [];
+
+const SPECIAL_TABLE = [["", ""], ["ソロモン", "solomon"], ["シバの女王", "sheva"]]
+
 enum ShowState {
   MegidoFront,
   MegidoThumb,
@@ -37,6 +46,11 @@ let CAN_I_USE_WEBP = true;
 enum DrawTarget {
   HiddenFront,
   MegidoOverlay,
+}
+
+enum SortOrder {
+  Number,
+  Alphabet,
 }
 
 async function drawText(
@@ -525,6 +539,65 @@ function bottomButtonListener() {
   );
 }
 
+function switchSortOrderListener() {
+  let elem = document.querySelector<HTMLButtonElement>("#switch_sort_order")!
+  const ATTR_NAME = "sortOrderNumber"
+  elem.addEventListener(
+    "click",
+    (ev: Event) => {
+      if (elem.dataset[ATTR_NAME]) {
+        switchSortOrder(SortOrder.Alphabet)
+        delete elem.dataset[ATTR_NAME]
+        elem.innerText = "五十音順"
+      } else {
+        switchSortOrder(SortOrder.Number)
+        elem.dataset[ATTR_NAME] = "true"
+        elem.innerText = "番号順"
+      }
+    }
+  );
+}
+
+function switchSortOrder(order: SortOrder) {
+  const sel = document.querySelector<HTMLSelectElement>(
+    "#recommend_megido",
+  )!;
+  let currentValue = sel.value
+  sel.replaceChildren()
+
+  SPECIAL_TABLE.forEach(
+    ([ja, fn]) => {
+      const opt = document.createElement("option");
+      opt.text = ja;
+      opt.value = fn;
+      sel.add(opt);
+    },
+  );
+
+  let sorted: Megido[]
+  if (order == SortOrder.Number) {
+    sorted = MEGIDO_LIST
+  } else {
+    sorted = MEGIDO_LIST.toSorted((item1: Megido, item2: Megido) => item1.name.localeCompare(item2.name))
+  }
+
+  sorted.forEach((item: Megido) => {
+    if (item.n) {
+      const opt = document.createElement("option");
+      opt.text = item.name;
+      opt.value = item.n;
+      sel.add(opt);
+    }
+    if (item.re_n) {
+      const opt = document.createElement("option");
+      opt.text = item.name + " Re";
+      opt.value = item.re_n;
+      sel.add(opt);
+    }
+  });
+  sel.value = currentValue
+}
+
 function startUp() {
   const img = new Image();
   img.src = "/img/recommend_bg.png";
@@ -563,40 +636,24 @@ function startUp() {
   });
   fetch("/data/megido_list.json").then((data) => {
     data.json().then((json) => {
-      const sel = document.querySelector<HTMLSelectElement>(
-        "#recommend_megido",
-      )!;
-      interface megido {
-        name: string;
-        n: string | null;
-        re_n: string | null;
-      }
-      [["ソロモン", "solomon"], ["シバの女王", "sheva"]].forEach(
+      MEGIDO_LIST = json.list
+
+      SPECIAL_TABLE.forEach(
         ([ja, fn]) => {
-          const opt = document.createElement("option");
-          opt.text = ja;
-          opt.value = fn;
-          sel.add(opt);
           MEGIDO_TABLE.set(fn, ja);
         },
       );
 
-      json.list.forEach((item: megido) => {
-        if (item.n) {
-          const opt = document.createElement("option");
-          opt.text = item.name;
-          opt.value = item.n;
-          sel.add(opt);
-          MEGIDO_TABLE.set(item.n, item.name);
-        }
-        if (item.re_n) {
-          const opt = document.createElement("option");
-          opt.text = item.name + " Re";
-          opt.value = item.re_n;
-          sel.add(opt);
-          MEGIDO_TABLE.set(item.re_n, item.name);
-        }
-      });
+      MEGIDO_LIST.
+        forEach((item: Megido) => {
+          if (item.n) {
+            MEGIDO_TABLE.set(item.n, item.name);
+          }
+          if (item.re_n) {
+            MEGIDO_TABLE.set(item.re_n, item.name);
+          }
+        });
+      switchSortOrder(SortOrder.Alphabet)
     });
   });
 }
@@ -665,6 +722,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startUp();
   colorPicker();
   checkWebp("lossy");
+  switchSortOrderListener();
 
   //debugCanvas();
 });
